@@ -287,8 +287,8 @@
       const cols = [
         { key: 'play_title', label: 'Work', defaultDir: 'asc', type: 'text' },
         { key: 'act', label: 'Chapter', type: 'number' },
-        { key: 'scene', label: 'Paragraph', type: 'number' },
-        { key: 'text', label: 'Paragraph Text', defaultDir: 'asc', type: 'text' }
+        { key: 'scene', label: 'Paragraph #', type: 'number' },
+        { key: 'text', label: 'Paragraph', defaultDir: 'asc', type: 'text' }
       ];
 
       els.headRow.innerHTML = '';

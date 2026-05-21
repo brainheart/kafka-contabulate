@@ -27,7 +27,7 @@
 
   <div class="tabs is-hidden">
     <button class="tab-btn active" data-tab="segments">Rows are Contexts</button>
-    <button class="tab-btn" data-tab="lines">Rows are Paragraph Text</button>
+    <button class="tab-btn" data-tab="lines">Rows are Paragraphs</button>
   </div>
 
   <div class="tab-content" id="segmentsTab">
@@ -44,8 +44,8 @@
           <option value="genre">Genre</option>
           <option value="play">Work</option>
           <option value="act">Chapter</option>
-          <option value="scene">Paragraph</option>
-          <option value="line" selected>Paragraph Text</option>
+          <option value="scene">Paragraph #</option>
+          <option value="line" selected>Paragraph</option>
         </select>
         <span class="label-strong">matching</span>
         <select id="matchMode" class="control-select">
@@ -1387,7 +1387,7 @@
             row[`${termKeys[idx]}_count`] = c;
           }
         });
-        if (hasTerm) {
+        if (hasTerm || lineMatchers.length === 0) {
           row.line_highlight_regex = (matchedNgrams.length === 0 || matchedNgrams.length > 60)
             ? null
             : buildHighlightRegexFromNgrams(matchedNgrams);
@@ -1399,11 +1399,11 @@
         { key: 'location', label: 'Location', defaultDir: 'asc', type: 'text' },
         { key: 'play_title', label: 'Work', defaultDir: 'asc', type: 'text' },
         { key: 'act', label: 'Chapter', type: 'number' },
-        { key: 'scene', label: 'Paragraph', type: 'number' }
+        { key: 'scene', label: 'Paragraph #', type: 'number' }
       ];
       const termCols = buildTermColumns();
       baseCols.push(...termCols);
-      baseCols.push({ key: 'line', label: 'Paragraph Text', type: 'text' });
+      baseCols.push({ key: 'line', label: 'Paragraph', type: 'text' });
       setHeaders(baseCols);
       if (!applyPreferredTermSort(termCols, preferredSortTermIndex)) {
         const defaultSortKey = termCols[0]?.key || 'location';
@@ -1976,7 +1976,7 @@
     <span aria-hidden="true"> · </span>
     <a href="https://github.com/brainheart/kafka-contabulate" target="_blank" rel="noopener">Source</a>
     <span aria-hidden="true"> · </span>
-    <span class="build-indicator">build 2026-05-21 09:00 UTC</span>
+    <span class="build-indicator">build 2026-05-21 09:25 UTC</span>
   </footer>
 </body>
 </html>

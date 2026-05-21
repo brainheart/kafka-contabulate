@@ -44,7 +44,6 @@
           <option value="genre">Genre</option>
           <option value="play">Work</option>
           <option value="act">Chapter</option>
-          <option value="scene">Paragraph #</option>
           <option value="line" selected>Paragraph</option>
         </select>
         <span class="label-strong">matching</span>
@@ -1398,8 +1397,7 @@
       const baseCols = [
         { key: 'location', label: 'Location', defaultDir: 'asc', type: 'text' },
         { key: 'play_title', label: 'Work', defaultDir: 'asc', type: 'text' },
-        { key: 'act', label: 'Chapter', type: 'number' },
-        { key: 'scene', label: 'Paragraph #', type: 'number' }
+        { key: 'act', label: 'Chapter', type: 'number' }
       ];
       const termCols = buildTermColumns();
       baseCols.push(...termCols);
@@ -1976,7 +1974,7 @@
     <span aria-hidden="true"> · </span>
     <a href="https://github.com/brainheart/kafka-contabulate" target="_blank" rel="noopener">Source</a>
     <span aria-hidden="true"> · </span>
-    <span class="build-indicator">build 2026-05-21 09:25 UTC</span>
+    <span class="build-indicator">build 2026-05-21 10:35 UTC</span>
   </footer>
 </body>
 </html>

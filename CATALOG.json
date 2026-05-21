@@ -1,0 +1,92 @@
+[
+  {
+    "id": "betrachtung",
+    "title": "Betrachtung",
+    "genre": "Stories",
+    "year": 1912,
+    "gutenberg_id": 23532,
+    "file": "texts/betrachtung.txt",
+    "parse": "collection"
+  },
+  {
+    "id": "das-urteil",
+    "title": "Das Urteil",
+    "genre": "Novella",
+    "year": 1913,
+    "gutenberg_id": 21593,
+    "file": "texts/das-urteil.txt",
+    "parse": "whole"
+  },
+  {
+    "id": "der-heizer",
+    "title": "Der Heizer",
+    "genre": "Novella",
+    "year": 1913,
+    "gutenberg_id": 16304,
+    "file": "texts/der-heizer.txt",
+    "parse": "whole"
+  },
+  {
+    "id": "die-verwandlung",
+    "title": "Die Verwandlung",
+    "genre": "Novella",
+    "year": 1915,
+    "gutenberg_id": 22367,
+    "file": "texts/die-verwandlung.txt",
+    "parse": "roman"
+  },
+  {
+    "id": "in-der-strafkolonie",
+    "title": "In der Strafkolonie",
+    "genre": "Novella",
+    "year": 1919,
+    "gutenberg_id": 25791,
+    "file": "texts/in-der-strafkolonie.txt",
+    "parse": "whole"
+  },
+  {
+    "id": "ein-landarzt",
+    "title": "Ein Landarzt",
+    "genre": "Stories",
+    "year": 1919,
+    "gutenberg_id": 21989,
+    "file": "texts/ein-landarzt.txt",
+    "parse": "collection"
+  },
+  {
+    "id": "ein-hungerkuenstler",
+    "title": "Ein Hungerkünstler",
+    "genre": "Story",
+    "year": 1922,
+    "gutenberg_id": 30655,
+    "file": "texts/ein-hungerkuenstler.txt",
+    "parse": "whole"
+  },
+  {
+    "id": "der-mord",
+    "title": "Der Mord",
+    "genre": "Story",
+    "year": 1917,
+    "gutenberg_id": 30753,
+    "file": "texts/der-mord.txt",
+    "parse": "whole"
+  },
+  {
+    "id": "richard-und-samuel",
+    "title": "Richard und Samuel",
+    "genre": "Collaboration",
+    "year": 1912,
+    "gutenberg_id": 38395,
+    "file": "texts/richard-und-samuel.txt",
+    "parse": "whole"
+  },
+  {
+    "id": "der-prozess",
+    "title": "Der Prozess",
+    "genre": "Novel",
+    "year": 1925,
+    "gutenberg_id": 69327,
+    "file": "texts/der-prozess.txt",
+    "parse": "prosecuted"
+  }
+]

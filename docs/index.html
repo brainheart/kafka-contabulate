@@ -765,10 +765,12 @@
 
   // Precompute act/play totals (must be before applyStateFromURL which may call doSearch→denomFor)
   const actTotals = new Map();
+  const actLabels = new Map();
   const playTotals = new Map();
   for (const r of chunks) {
     const k = `${r.play_id}:${r.act}`;
     actTotals.set(k, (actTotals.get(k)||0) + (r.total_words||0));
+    if (!actLabels.has(k) && r.act_label) actLabels.set(k, r.act_label);
     playTotals.set(r.play_id, (playTotals.get(r.play_id)||0) + (r.total_words||0));
   }
 
@@ -1295,7 +1297,7 @@
           if (!play) continue;
           ensureRow(k, () => {
             const ngramCount = getRowNgramCount(total_words);
-            return { id: `${play.abbr}.${actNum}`, location:getChapterLocation(play, actNum), play_title: play.title, genre:play.genre, play_id:pid, act:actNum, total_words, ngram_count:ngramCount };
+            return { id: `${play.abbr}.${actNum}`, location:getChapterLocation(play, actNum), play_title: play.title, genre:play.genre, play_id:pid, act:actNum, act_label: actLabels.get(k) || String(actNum), total_words, ngram_count:ngramCount };
           });
         }
       } else if (granVal === 'play') {
@@ -1450,6 +1452,7 @@
       const baseCols = [
         {key:'location', label:'Location', defaultDir:'asc', type:'text'},
         {key:'play_title', label:'Work', defaultDir:'asc', type:'text'},
+        {key:'genre', label:'Type', defaultDir:'asc', type:'text'},
         {key:'act', label:'Story / Chapter', type:'text'},
         {key:'ngram_count', label: getBaseCountLabel(), type:'number'}
       ];
@@ -1470,7 +1473,7 @@
           const row = ensureRow(k, () => {
             const total_words = actTotals.get(k) || 0;
             const ngramCount = getRowNgramCount(total_words);
-            return { id: `${play.abbr}.${actNum}`, location:getChapterLocation(play, actNum), play_title: play.title, genre:play.genre, play_id:pid, act:actNum, total_words, ngram_count:ngramCount };
+            return { id: `${play.abbr}.${actNum}`, location:getChapterLocation(play, actNum), play_title: play.title, genre:play.genre, play_id:pid, act:actNum, act_label: actLabels.get(k) || String(actNum), total_words, ngram_count:ngramCount };
           });
           const d = denomFor(normalizeTermN(term.n) || 1,'act',{play_id:pid,act:actNum});
           row[`${termKeys[termIdx]}_count`] = count;
@@ -1976,7 +1979,7 @@
     <span aria-hidden="true"> · </span>
     <a href="https://github.com/brainheart/kafka-contabulate" target="_blank" rel="noopener">Source</a>
     <span aria-hidden="true"> · </span>
-    <span class="build-indicator">build 2026-05-21 11:20 UTC</span>
+    <span class="build-indicator">build 2026-05-21 13:55 UTC</span>
   </footer>
 </body>
 </html>

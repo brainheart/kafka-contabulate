@@ -105,6 +105,7 @@
       }
       const queryTokens = window.normalizeTerm(query).split(/\s+/).filter(Boolean).slice(0, n);
       const queryNgram = queryTokens.join(' ');
+      const showAllLines = !queryNgram && !isRegex;
 
       for (const line of allLines) {
         let matches = false;
@@ -127,13 +128,16 @@
             highlightRegex = matchedNgrams.length > 50 ? null : window.buildHighlightRegexFromNgrams(matchedNgrams);
           }
         } else {
-          if (!queryNgram) return null;
-          let count = 0;
-          for (const ng of ngrams) {
-            if (ng === queryNgram) count++;
+          if (!queryNgram) {
+            matches = showAllLines;
+          } else {
+            let count = 0;
+            for (const ng of ngrams) {
+              if (ng === queryNgram) count++;
+            }
+            matches = count > 0;
+            if (matches) highlightRegex = window.buildHighlightRegexFromNgrams([queryNgram]);
           }
-          matches = count > 0;
-          if (matches) highlightRegex = window.buildHighlightRegexFromNgrams([queryNgram]);
         }
 
         if (matches) {
@@ -144,6 +148,7 @@
           rows.push({
             play_title: play ? play.title : 'Unknown',
             play_id: line.play_id,
+            genre: play ? play.genre : '',
             act: line.act,
             scene: line.scene,
             line_num: line.line_num,
@@ -237,7 +242,6 @@
       for (const row of paginatedRows) {
         const tr = document.createElement('tr');
         const actVal = row.act_label || row.act;
-        const sceneVal = row.scene_label || row.scene;
 
         const tdPlay = document.createElement('td');
         if (row.play_id != null && typeof window.buildPlayDetailLink === 'function') {
@@ -246,11 +250,11 @@
           tdPlay.textContent = row.play_title ?? '';
         }
 
+        const tdGenre = document.createElement('td');
+        tdGenre.textContent = row.genre ?? '';
+
         const tdAct = document.createElement('td');
         tdAct.textContent = actVal;
-
-        const tdScene = document.createElement('td');
-        tdScene.textContent = sceneVal;
 
         const tdText = document.createElement('td');
         tdText.className = 'line-text';
@@ -259,8 +263,8 @@
           : window.escapeHTML(row.text);
 
         tr.appendChild(tdPlay);
+        tr.appendChild(tdGenre);
         tr.appendChild(tdAct);
-        tr.appendChild(tdScene);
         tr.appendChild(tdText);
         els.tableBody.appendChild(tr);
       }
@@ -286,7 +290,8 @@
       if (!els.headRow) return;
       const cols = [
         { key: 'play_title', label: 'Work', defaultDir: 'asc', type: 'text' },
-        { key: 'act', label: 'Chapter', type: 'number' },
+        { key: 'genre', label: 'Type', defaultDir: 'asc', type: 'text' },
+        { key: 'act', label: 'Story / Chapter', type: 'text' },
         { key: 'text', label: 'Paragraph', defaultDir: 'asc', type: 'text' }
       ];
 
@@ -332,13 +337,6 @@
     function doSearch() {
       if (!els.query || !els.tableBody || !els.pagination) return;
       const query = els.query.value.trim();
-      if (!query) {
-        els.tableBody.innerHTML = '';
-        setElementHidden(els.pagination, true);
-        updateFilterActions();
-        return;
-      }
-
       const rows = buildLinesRows(query);
       if (!rows) {
         els.tableBody.innerHTML = '<tr><td colspan="4" class="warning">Invalid search or no paragraph data available.</td></tr>';

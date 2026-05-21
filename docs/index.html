@@ -41,9 +41,9 @@
         </select>
         <span class="label-strong">by</span>
         <select id="gran" class="control-select">
-          <option value="genre">Genre</option>
+          <option value="genre">Type</option>
           <option value="play">Work</option>
-          <option value="act">Chapter</option>
+          <option value="act">Story / Chapter</option>
           <option value="line" selected>Paragraph</option>
         </select>
         <span class="label-strong">matching</span>
@@ -1356,6 +1356,7 @@
           location: ln.location || getVerseLocation(play, ln.act, ln.scene),
           play_id: ln.play_id,
           play_title: play.title || '',
+          genre: play.genre || '',
           act: ln.act,
           scene: ln.scene,
           act_label: ln.act_label,
@@ -1397,7 +1398,8 @@
       const baseCols = [
         { key: 'location', label: 'Location', defaultDir: 'asc', type: 'text' },
         { key: 'play_title', label: 'Work', defaultDir: 'asc', type: 'text' },
-        { key: 'act', label: 'Chapter', type: 'number' }
+        { key: 'genre', label: 'Type', defaultDir: 'asc', type: 'text' },
+        { key: 'act', label: 'Story / Chapter', type: 'text' }
       ];
       const termCols = buildTermColumns();
       baseCols.push(...termCols);
@@ -1415,7 +1417,7 @@
       const baseCols = [
         {key:'location', label:'Location', defaultDir:'asc', type:'text'},
         {key:'play_title', label:'Work', defaultDir:'asc', type:'text'},
-        {key:'act', label:'Chapter', type:'number'},
+        {key:'act', label:'Story / Chapter', type:'text'},
         {key:'scene', label:'Paragraph', type:'number'},
         {key:'ngram_count', label: getBaseCountLabel(), type:'number'}
       ];
@@ -1448,7 +1450,7 @@
       const baseCols = [
         {key:'location', label:'Location', defaultDir:'asc', type:'text'},
         {key:'play_title', label:'Work', defaultDir:'asc', type:'text'},
-        {key:'act', label:'Chapter', type:'number'},
+        {key:'act', label:'Story / Chapter', type:'text'},
         {key:'ngram_count', label: getBaseCountLabel(), type:'number'}
       ];
       activeTerms.forEach((term, termIdx) => {
@@ -1490,8 +1492,8 @@
         {key:'location', label:'Location', defaultDir:'asc', type:'text'},
         {key:'title', label:'Work', defaultDir:'asc', type:'text'},
         {key:'first_performance_year', label:'Year', type:'number'},
-        {key:'genre', label:'Genre', defaultDir:'asc', type:'text'},
-        {key:'num_chapters', label:'# chapters', type:'number'},
+        {key:'genre', label:'Type', defaultDir:'asc', type:'text'},
+        {key:'num_chapters', label:'# sections', type:'number'},
         {key:'num_lines', label:'# paragraphs', type:'number'},
         {key:'ngram_count', label: getBaseCountLabel(), type:'number'}
       ];
@@ -1527,7 +1529,7 @@
 
     if (granVal==='genre'){
       const baseCols = [
-        {key:'genre', label:'Genre', defaultDir:'asc', type:'text'},
+        {key:'genre', label:'Type', defaultDir:'asc', type:'text'},
         {key:'num_plays', label:'# works', type:'number'},
         {key:'ngram_count', label: getBaseCountLabel(), type:'number'}
       ];
@@ -1974,7 +1976,7 @@
     <span aria-hidden="true"> · </span>
     <a href="https://github.com/brainheart/kafka-contabulate" target="_blank" rel="noopener">Source</a>
     <span aria-hidden="true"> · </span>
-    <span class="build-indicator">build 2026-05-21 10:35 UTC</span>
+    <span class="build-indicator">build 2026-05-21 11:20 UTC</span>
   </footer>
 </body>
 </html>

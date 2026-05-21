@@ -2,7 +2,7 @@
   {
     "id": "betrachtung",
     "title": "Betrachtung",
-    "genre": "Stories",
+    "genre": "Story collection",
     "year": 1912,
     "gutenberg_id": 23532,
     "file": "texts/betrachtung.txt",
@@ -47,7 +47,7 @@
   {
     "id": "ein-landarzt",
     "title": "Ein Landarzt",
-    "genre": "Stories",
+    "genre": "Story collection",
     "year": 1919,
     "gutenberg_id": 21989,
     "file": "texts/ein-landarzt.txt",

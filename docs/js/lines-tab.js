@@ -33,7 +33,7 @@
       currentPage: 1,
       pageSize: Number.parseInt(els.pageSize && els.pageSize.value, 10) || 50,
       allRows: [],
-      sortKey: 'line_num',
+      sortKey: 'paragraph_num',
       sortDir: 'asc',
       columnFilters: new Map(),
       pendingChanges: false,
@@ -149,8 +149,11 @@
             play_title: play ? play.title : 'Unknown',
             play_id: line.play_id,
             genre: play ? play.genre : '',
+            chapter_num: line.act,
             act: line.act,
+            act_label: line.act_label,
             scene: line.scene,
+            paragraph_num: line.line_num ?? line.scene,
             line_num: line.line_num,
             text: rawText,
             highlightRegex
@@ -250,11 +253,14 @@
           tdPlay.textContent = row.play_title ?? '';
         }
 
-        const tdGenre = document.createElement('td');
-        tdGenre.textContent = row.genre ?? '';
+        const tdChapter = document.createElement('td');
+        tdChapter.textContent = row.chapter_num ?? '';
 
         const tdAct = document.createElement('td');
         tdAct.textContent = actVal;
+
+        const tdParagraphNum = document.createElement('td');
+        tdParagraphNum.textContent = row.paragraph_num ?? row.line_num ?? '';
 
         const tdText = document.createElement('td');
         tdText.className = 'line-text';
@@ -263,8 +269,9 @@
           : window.escapeHTML(row.text);
 
         tr.appendChild(tdPlay);
-        tr.appendChild(tdGenre);
+        tr.appendChild(tdChapter);
         tr.appendChild(tdAct);
+        tr.appendChild(tdParagraphNum);
         tr.appendChild(tdText);
         els.tableBody.appendChild(tr);
       }
@@ -290,8 +297,9 @@
       if (!els.headRow) return;
       const cols = [
         { key: 'play_title', label: 'Work', defaultDir: 'asc', type: 'text' },
-        { key: 'genre', label: 'Type', defaultDir: 'asc', type: 'text' },
-        { key: 'act', label: 'Story / Chapter', type: 'text' },
+        { key: 'chapter_num', label: 'Chapter #', type: 'number' },
+        { key: 'act_label', label: 'Story / Chapter', type: 'text' },
+        { key: 'paragraph_num', label: 'Paragraph #', type: 'number' },
         { key: 'text', label: 'Paragraph', defaultDir: 'asc', type: 'text' }
       ];
 
@@ -339,14 +347,14 @@
       const query = els.query.value.trim();
       const rows = buildLinesRows(query);
       if (!rows) {
-        els.tableBody.innerHTML = '<tr><td colspan="4" class="warning">Invalid search or no paragraph data available.</td></tr>';
+        els.tableBody.innerHTML = '<tr><td colspan="5" class="warning">Invalid search or no paragraph data available.</td></tr>';
         setElementHidden(els.pagination, true);
         updateFilterActions();
         return;
       }
 
       if (rows.length === 0) {
-        els.tableBody.innerHTML = '<tr><td colspan="4" class="muted">No paragraphs matched.</td></tr>';
+        els.tableBody.innerHTML = '<tr><td colspan="5" class="muted">No paragraphs matched.</td></tr>';
         setElementHidden(els.pagination, true);
         updateFilterActions();
         return;
@@ -414,7 +422,7 @@
       const rows = [cols.map(c => c.label)];
       for (const r of filtered) {
         rows.push(cols.map(c => {
-          if (c.key === 'act') return r.act_label || r.act;
+          if (c.key === 'act_label') return r.act_label || r.act;
           if (c.key === 'scene') return r.scene_label || r.scene;
           if (c.key === 'text') return r.text;
           return r[c.key] ?? '';

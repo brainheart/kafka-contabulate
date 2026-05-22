@@ -1285,7 +1285,7 @@
             const totalWords = m.total_words || 0;
             const ngramCount = getRowNgramCount(totalWords);
             const playMeta = playsById.get(m.play_id) || { play_id: m.play_id, abbr: m.play_abbr, location: m.location };
-            return { id: m.canonical_id, location: m.location || getVerseLocation(playMeta, m.act, m.scene), play_title: m.play_title, genre:m.genre, play_id:m.play_id, act:m.act, scene:m.scene, total_words:totalWords, ngram_count:ngramCount, scene_id: m.scene_id, act_label: m.act_label, scene_label: m.scene_label };
+            return { id: m.canonical_id, location: m.location || getVerseLocation(playMeta, m.act, m.scene), play_title: m.play_title, genre:m.genre, play_id:m.play_id, chapter_num:m.act, act:m.act, scene:m.scene, total_words:totalWords, ngram_count:ngramCount, scene_id: m.scene_id, act_label: m.act_label, scene_label: m.scene_label };
           });
         });
       } else if (granVal === 'act') {
@@ -1297,7 +1297,7 @@
           if (!play) continue;
           ensureRow(k, () => {
             const ngramCount = getRowNgramCount(total_words);
-            return { id: `${play.abbr}.${actNum}`, location:getChapterLocation(play, actNum), play_title: play.title, genre:play.genre, play_id:pid, act:actNum, act_label: actLabels.get(k) || String(actNum), total_words, ngram_count:ngramCount };
+            return { id: `${play.abbr}.${actNum}`, location:getChapterLocation(play, actNum), play_title: play.title, genre:play.genre, play_id:pid, chapter_num:actNum, act:actNum, act_label: actLabels.get(k) || String(actNum), total_words, ngram_count:ngramCount };
           });
         }
       } else if (granVal === 'play') {
@@ -1359,8 +1359,10 @@
           play_id: ln.play_id,
           play_title: play.title || '',
           genre: play.genre || '',
+          chapter_num: ln.act,
           act: ln.act,
           scene: ln.scene,
+          paragraph_num: ln.line_num ?? ln.scene,
           act_label: ln.act_label,
           scene_label: ln.scene_label,
           line_num: ln.line_num,
@@ -1400,8 +1402,9 @@
       const baseCols = [
         { key: 'location', label: 'Location', defaultDir: 'asc', type: 'text' },
         { key: 'play_title', label: 'Work', defaultDir: 'asc', type: 'text' },
-        { key: 'genre', label: 'Type', defaultDir: 'asc', type: 'text' },
-        { key: 'act', label: 'Story / Chapter', type: 'text' }
+        { key: 'chapter_num', label: 'Chapter #', type: 'number' },
+        { key: 'act_label', label: 'Story / Chapter', type: 'text' },
+        { key: 'paragraph_num', label: 'Paragraph #', type: 'number' }
       ];
       const termCols = buildTermColumns();
       baseCols.push(...termCols);
@@ -1419,8 +1422,9 @@
       const baseCols = [
         {key:'location', label:'Location', defaultDir:'asc', type:'text'},
         {key:'play_title', label:'Work', defaultDir:'asc', type:'text'},
-        {key:'act', label:'Story / Chapter', type:'text'},
-        {key:'scene', label:'Paragraph', type:'number'},
+        {key:'chapter_num', label:'Chapter #', type:'number'},
+        {key:'act_label', label:'Story / Chapter', type:'text'},
+        {key:'scene', label:'Paragraph #', type:'number'},
         {key:'ngram_count', label: getBaseCountLabel(), type:'number'}
       ];
       activeTerms.forEach((term, termIdx) => {
@@ -1431,7 +1435,7 @@
             const totalWords = m.total_words || 0;
             const ngramCount = getRowNgramCount(totalWords);
             const playMeta = playsById.get(m.play_id) || { play_id: m.play_id, abbr: m.play_abbr, location: m.location };
-            return { id: m.canonical_id, location: m.location || getVerseLocation(playMeta, m.act, m.scene), play_title: m.play_title, genre:m.genre, play_id:m.play_id, act:m.act, scene:m.scene, total_words:totalWords, ngram_count:ngramCount, scene_id };
+            return { id: m.canonical_id, location: m.location || getVerseLocation(playMeta, m.act, m.scene), play_title: m.play_title, genre:m.genre, play_id:m.play_id, chapter_num:m.act, act:m.act, scene:m.scene, total_words:totalWords, ngram_count:ngramCount, scene_id, act_label:m.act_label, scene_label:m.scene_label };
           });
           const d = denomFor(normalizeTermN(term.n) || 1,'scene',m);
           row[`${termKeys[termIdx]}_count`] = count;
@@ -1452,8 +1456,8 @@
       const baseCols = [
         {key:'location', label:'Location', defaultDir:'asc', type:'text'},
         {key:'play_title', label:'Work', defaultDir:'asc', type:'text'},
-        {key:'genre', label:'Type', defaultDir:'asc', type:'text'},
-        {key:'act', label:'Story / Chapter', type:'text'},
+        {key:'chapter_num', label:'Chapter #', type:'number'},
+        {key:'act_label', label:'Story / Chapter', type:'text'},
         {key:'ngram_count', label: getBaseCountLabel(), type:'number'}
       ];
       activeTerms.forEach((term, termIdx) => {
@@ -1473,7 +1477,7 @@
           const row = ensureRow(k, () => {
             const total_words = actTotals.get(k) || 0;
             const ngramCount = getRowNgramCount(total_words);
-            return { id: `${play.abbr}.${actNum}`, location:getChapterLocation(play, actNum), play_title: play.title, genre:play.genre, play_id:pid, act:actNum, act_label: actLabels.get(k) || String(actNum), total_words, ngram_count:ngramCount };
+            return { id: `${play.abbr}.${actNum}`, location:getChapterLocation(play, actNum), play_title: play.title, genre:play.genre, play_id:pid, chapter_num:actNum, act:actNum, act_label: actLabels.get(k) || String(actNum), total_words, ngram_count:ngramCount };
           });
           const d = denomFor(normalizeTermN(term.n) || 1,'act',{play_id:pid,act:actNum});
           row[`${termKeys[termIdx]}_count`] = count;
@@ -1979,7 +1983,7 @@
     <span aria-hidden="true"> · </span>
     <a href="https://github.com/brainheart/kafka-contabulate" target="_blank" rel="noopener">Source</a>
     <span aria-hidden="true"> · </span>
-    <span class="build-indicator">build 2026-05-21 13:55 UTC</span>
+    <span class="build-indicator">build 2026-05-22 15:54 UTC</span>
   </footer>
 </body>
 </html>

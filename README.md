@@ -8,7 +8,7 @@ The corpus includes 11 public-domain texts:
 
 - Betrachtung
 - Das Urteil
-- Der Heizer
+- Amerika
 - Die Verwandlung
 - In der Strafkolonie
 - Ein Landarzt
@@ -18,7 +18,7 @@ The corpus includes 11 public-domain texts:
 - Der Prozess
 - Das Schloss
 
-Most source texts are Project Gutenberg eTexts. Das Schloss is imported from the Sternchenland public-domain EPUB at https://sternchenland.com/romane/franz-kafka/das-schloss.
+Most source texts are Project Gutenberg eTexts. Amerika and Das Schloss are imported from Sternchenland public-domain EPUBs at https://sternchenland.com/romane/franz-kafka/amerika and https://sternchenland.com/romane/franz-kafka/das-schloss. Amerika includes Der Heizer as its first chapter, so Der Heizer is not counted separately.
 
 Build generated data with:
 

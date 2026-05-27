@@ -18,13 +18,14 @@
     "parse": "whole"
   },
   {
-    "id": "der-heizer",
-    "title": "Der Heizer",
-    "genre": "Novella",
-    "year": 1913,
-    "gutenberg_id": 16304,
-    "file": "texts/der-heizer.txt",
-    "parse": "whole"
+    "id": "amerika",
+    "title": "Amerika",
+    "genre": "Novel",
+    "year": 1927,
+    "source": "Sternchenland public-domain EPUB",
+    "source_url": "https://sternchenland.com/romane/franz-kafka/amerika",
+    "file": "texts/amerika.txt",
+    "parse": "source_chapters"
   },
   {
     "id": "die-verwandlung",

@@ -18,7 +18,7 @@ END_RE = re.compile(r"\*\*\*\s*END OF THE PROJECT GUTENBERG EBOOK.*?\*\*\*", re.
 WORK_ABBRS = {
     "betrachtung": "BETR",
     "das-urteil": "URT",
-    "der-heizer": "HEIZ",
+    "amerika": "AMER",
     "die-verwandlung": "VERW",
     "in-der-strafkolonie": "STRAF",
     "ein-landarzt": "LAND",
@@ -270,6 +270,18 @@ def parse_german_chapters(text):
     return build_sections(lines, starts)
 
 
+def parse_source_chapters(text):
+    lines = text.splitlines()
+    starts = []
+    for idx, raw in enumerate(lines):
+        match = re.fullmatch(r"###\s+Chapter\s+(\d+)(?::\s*(.*))?", raw.strip())
+        if match:
+            number = int(match.group(1))
+            title = match.group(2) or ""
+            starts.append((idx, number, f"Chapter {number}", title))
+    return build_sections(lines, starts)
+
+
 def build_sections(lines, starts):
     sections = []
     for pos, (start_idx, number, label, inline_title) in enumerate(starts):
@@ -307,6 +319,8 @@ def parse_work_sections(work):
         return parse_prozess(body) or parse_whole(body, work["title"])
     if mode == "german_chapters":
         return parse_german_chapters(body) or parse_whole(body, work["title"])
+    if mode == "source_chapters":
+        return parse_source_chapters(body) or parse_whole(body, work["title"])
     return parse_whole(body, work["title"])
 
 

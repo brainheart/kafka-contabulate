@@ -26,22 +26,59 @@ WORK_ABBRS = {
     "der-mord": "MORD",
     "richard-und-samuel": "RICH",
     "der-prozess": "PROZ",
+    "das-schloss": "SCHL",
 }
 
 ROMAN_VALUES = {"I": 1, "V": 5, "X": 10, "L": 50, "C": 100, "D": 500, "M": 1000}
 GERMAN_ORDINALS = {
+    "ERSTE": 1,
     "ERSTES": 1,
+    "ZWEITE": 2,
     "ZWEITES": 2,
+    "DRITTE": 3,
     "DRITTES": 3,
+    "VIERTE": 4,
     "VIERTES": 4,
+    "FÜNFTE": 5,
+    "FUENFTE": 5,
     "FÜNFTES": 5,
     "FUENFTES": 5,
+    "SECHSTE": 6,
     "SECHSTES": 6,
+    "SIEBENTE": 7,
     "SIEBENTES": 7,
+    "SIEBTE": 7,
     "SIEBTES": 7,
+    "ACHTE": 8,
     "ACHTES": 8,
+    "NEUNTE": 9,
     "NEUNTES": 9,
+    "ZEHNTE": 10,
     "ZEHNTES": 10,
+    "ELFTE": 11,
+    "ELFTES": 11,
+    "ZWÖLFTE": 12,
+    "ZWOELFTE": 12,
+    "ZWÖLFTES": 12,
+    "ZWOELFTES": 12,
+    "DREIZEHNTE": 13,
+    "DREIZEHNTES": 13,
+    "VIERZEHNTE": 14,
+    "VIERZEHNTES": 14,
+    "FÜNFZEHNTE": 15,
+    "FUENFZEHNTE": 15,
+    "FÜNFZEHNTES": 15,
+    "FUENFZEHNTES": 15,
+    "SECHZEHNTE": 16,
+    "SECHZEHNTES": 16,
+    "SIEBZEHNTE": 17,
+    "SIEBZEHNTES": 17,
+    "ACHTZEHNTE": 18,
+    "ACHTZEHNTES": 18,
+    "NEUNZEHNTE": 19,
+    "NEUNZEHNTES": 19,
+    "ZWANZIGSTE": 20,
+    "ZWANZIGSTES": 20,
 }
 
 
@@ -219,6 +256,20 @@ def parse_prozess(text):
     return build_sections(lines, starts)
 
 
+def parse_german_chapters(text):
+    lines = text.splitlines()
+    starts = []
+    for idx, raw in enumerate(lines):
+        line = raw.strip().upper()
+        match = re.fullmatch(r"DAS\s+([A-ZÄÖÜ]+)\s+KAPITEL", line)
+        if not match:
+            continue
+        number = GERMAN_ORDINALS.get(match.group(1))
+        if number:
+            starts.append((idx, number, f"Chapter {number}", ""))
+    return build_sections(lines, starts)
+
+
 def build_sections(lines, starts):
     sections = []
     for pos, (start_idx, number, label, inline_title) in enumerate(starts):
@@ -254,6 +305,8 @@ def parse_work_sections(work):
         return parse_roman_sections(body) or parse_whole(body, work["title"])
     if mode == "prosecuted":
         return parse_prozess(body) or parse_whole(body, work["title"])
+    if mode == "german_chapters":
+        return parse_german_chapters(body) or parse_whole(body, work["title"])
     return parse_whole(body, work["title"])
 
 

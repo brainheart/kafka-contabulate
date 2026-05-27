@@ -88,5 +88,15 @@
     "gutenberg_id": 69327,
     "file": "texts/der-prozess.txt",
     "parse": "prosecuted"
+  },
+  {
+    "id": "das-schloss",
+    "title": "Das Schloss",
+    "genre": "Novel",
+    "year": 1926,
+    "source": "Sternchenland public-domain EPUB",
+    "source_url": "https://sternchenland.com/romane/franz-kafka/das-schloss",
+    "file": "texts/das-schloss.txt",
+    "parse": "german_chapters"
   }
 ]

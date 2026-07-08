@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "id": "kafka",
+  "emoji": "🪳",
+  "title": "Kafka",
+  "tagline": "Kafka Tabular Explorer",
+  "language": "German",
+  "url": "https://kafka.contabulate.org/",
+  "source": "https://github.com/brainheart/kafka-contabulate",
+  "sample_queries": [],
+  "updated": "2026-07-08",
+  "stats": {
+    "texts": 11,
+    "text_label": "works",
+    "segments": 2201,
+    "segment_label": "paragraphs",
+    "words": 333510,
+    "distinct_words": 22363
+  }
+}

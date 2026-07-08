@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """Build Contabulate JSON data files for a German Franz Kafka corpus."""
 
+import datetime
 import json
+import math
 import os
 import re
 import unicodedata
@@ -115,6 +117,26 @@ def normalize_token(text):
 def tokenize(text):
     return re.findall(r"[^\W\d_]+(?:[-'][^\W\d_]+)*", normalize_token(text), flags=re.UNICODE)
 
+
+
+SENT_RE = re.compile(r"[.!?]+")
+
+
+def count_sentences(text):
+    return len(SENT_RE.findall(text or ""))
+
+
+def mattr(tokens, window=50):
+    """Moving-average type-token ratio: lexical diversity comparable across lengths."""
+    if not tokens:
+        return 0.0
+    if len(tokens) < window:
+        return len(set(tokens)) / len(tokens)
+    ratios = [
+        len(set(tokens[i:i + window])) / window
+        for i in range(len(tokens) - window + 1)
+    ]
+    return sum(ratios) / len(ratios)
 
 def build_ngrams(tokens, n):
     return [" ".join(tokens[i:i + n]) for i in range(len(tokens) - n + 1)]
@@ -353,6 +375,7 @@ def build_json_corpus(catalog):
         play_location = f"{play_id:02d}.{play_abbr}"
         work_total_words = 0
         work_total_lines = 0
+        work_tokens = []  # ordered token stream for work-level MATTR
 
         for section in sections:
             section_num = section["number"]
@@ -383,6 +406,7 @@ def build_json_corpus(catalog):
                     "num_speeches": 0,
                     "num_lines": 1,
                     "characters_present_count": 0,
+                    "sentence_count": count_sentences(para),
                     "act_label": act_label,
                     "scene_label": str(para_idx),
                 })
@@ -407,6 +431,7 @@ def build_json_corpus(catalog):
                     tokens3[token].append([scene_id, count])
 
                 unique_unigrams.update(unigram_counts)
+                work_tokens.extend(words)
                 unique_bigrams.update(bigram_counts)
                 unique_trigrams.update(trigram_counts)
                 work_total_words += word_count
@@ -426,6 +451,7 @@ def build_json_corpus(catalog):
             "num_speeches": 0,
             "total_words": work_total_words,
             "total_lines": work_total_lines,
+            "mattr_50": round(mattr(work_tokens), 3),
         })
         per_work_stats.append({
             "title": work["title"],
@@ -434,6 +460,30 @@ def build_json_corpus(catalog):
             "paragraphs": work_total_lines,
             "words": work_total_words,
         })
+
+    # Additive metric fields (char_count, rarity_sum) per paragraph, plus
+    # hapax counts. The UI derives ratio metrics (mean word length, lexical
+    # rarity, % hapax) at any aggregation level from these sums.
+    corpus_freq = {tok: sum(c for _, c in postings) for tok, postings in tokens1.items()}
+    corpus_total = sum(corpus_freq.values()) or 1
+    tok_rarity = {tok: -math.log10(f / corpus_total) for tok, f in corpus_freq.items()}
+    para_chars = {}
+    para_rarity = {}
+    para_hapax = {}
+    for tok, postings in tokens1.items():
+        length = len(tok)
+        rarity = tok_rarity[tok]
+        for sid, count in postings:
+            para_chars[sid] = para_chars.get(sid, 0) + length * count
+            para_rarity[sid] = para_rarity.get(sid, 0.0) + rarity * count
+        if corpus_freq[tok] == 1:
+            sid = postings[0][0]
+            para_hapax[sid] = para_hapax.get(sid, 0) + 1
+    for chunk_row in chunks:
+        sid = chunk_row["scene_id"]
+        chunk_row["char_count"] = para_chars.get(sid, 0)
+        chunk_row["rarity_sum"] = round(para_rarity.get(sid, 0.0), 3)
+        chunk_row["hapax_count"] = para_hapax.get(sid, 0)
 
     return {
         "plays": plays,
@@ -469,6 +519,34 @@ def write_outputs(data):
     dump_json(os.path.join(OUT_DIR, "tokens_char3.json"), {})
     dump_json(os.path.join(OUT_DIR, "character_name_filter_config.json"), {"plays": {}})
     dump_json(os.path.join(LINES_DIR, "all_lines.json"), data["lines"])
+
+    # Publish instance metadata for the contabulate.org hub: curated fields
+    # from instance-meta.json merged with computed corpus stats.
+    instance_meta_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "instance-meta.json")
+    instance_meta = {}
+    if os.path.exists(instance_meta_path):
+        with open(instance_meta_path, encoding="utf-8") as f:
+            instance_meta = json.load(f)
+    totals = data["totals"]
+    instance_payload = {
+        "schema": 1,
+        **instance_meta,
+        "updated": datetime.date.today().isoformat(),
+        "stats": {
+            "texts": totals["works"],
+            "text_label": instance_meta.get("text_label", "works"),
+            "segments": totals["paragraphs"],
+            "segment_label": instance_meta.get("segment_label", "paragraphs"),
+            "words": totals["words"],
+            "distinct_words": totals["unique_unigrams"],
+        },
+    }
+    instance_payload.pop("text_label", None)
+    instance_payload.pop("segment_label", None)
+    with open(os.path.join(os.path.dirname(OUT_DIR), "instance.json"), "w", encoding="utf-8") as f:
+        json.dump(instance_payload, f, ensure_ascii=False, indent=2)
+
+
 
 
 def main():

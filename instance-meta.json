@@ -1,0 +1,12 @@
+{
+  "id": "kafka",
+  "emoji": "🪳",
+  "title": "Kafka",
+  "tagline": "Kafka Tabular Explorer",
+  "language": "German",
+  "url": "https://kafka.contabulate.org/",
+  "source": "https://github.com/brainheart/kafka-contabulate",
+  "text_label": "works",
+  "segment_label": "paragraphs",
+  "sample_queries": []
+}

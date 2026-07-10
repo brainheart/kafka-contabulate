@@ -155,10 +155,13 @@ class TestPublishedMetadata(unittest.TestCase):
         self.assertGreater(sum(c["hapax_count"] for c in chunks), 5000)
         instance = json.loads((DATA_DIR.parent / "instance.json").read_text())
         self.assertEqual(instance["id"], "kafka")
+        self.assertEqual(instance["created"], "2026-05-21")
         self.assertEqual(instance["stats"]["texts"], 11)
         self.assertEqual(instance["stats"]["segments"], 2201)
         self.assertEqual(instance["stats"]["words"], 333510)
         self.assertEqual(instance["stats"]["segment_label"], "paragraphs")
+        self.assertEqual(instance["stats"]["commentaries"], 0)
+        self.assertEqual(instance["stats"]["comments"], 0)
 
     def test_characters_are_empty_for_kafka_build(self):
         chars = json.loads((DATA_DIR / "characters.json").read_text())

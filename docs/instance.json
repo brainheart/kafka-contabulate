@@ -5,16 +5,19 @@
   "title": "Kafka",
   "tagline": "Kafka Tabular Explorer",
   "language": "German",
+  "created": "2026-05-21",
   "url": "https://kafka.contabulate.org/",
   "source": "https://github.com/brainheart/kafka-contabulate",
   "sample_queries": [],
-  "updated": "2026-07-08",
+  "updated": "2026-07-10",
   "stats": {
     "texts": 11,
     "text_label": "works",
     "segments": 2201,
     "segment_label": "paragraphs",
     "words": 333510,
-    "distinct_words": 22363
+    "distinct_words": 22363,
+    "commentaries": 0,
+    "comments": 0
   }
 }

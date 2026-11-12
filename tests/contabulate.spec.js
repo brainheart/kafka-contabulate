@@ -79,7 +79,7 @@ test.describe('Segments Search', () => {
     await page.goto('/');
     await waitForDataLoaded(page);
     // Works → the 18 sections of the first work
-    await page.locator('#results tbody tr').first().locator('td:nth-child(5) button.drill-link').click();
+    await page.locator('#results tbody tr').first().locator('td[data-key="num_chapters"] button.drill-link').click();
     await expect(page.locator('#gran')).toHaveValue('act');
     await expect(page.locator('#segmentsTotalInfo')).toContainText('(18 total rows)');
     await expect(page.locator('#segmentsActiveFilters .active-filter-chip')).toContainText('starts with 01.BETR.');
@@ -87,7 +87,7 @@ test.describe('Segments Search', () => {
     await page.goBack();
     await expect(page.locator('#gran')).toHaveValue('play');
     // Genre cell filters works to that genre
-    await page.locator('#results tbody tr').first().locator('td:nth-child(4) .drill-link').click();
+    await page.locator('#results tbody tr').first().locator('td[data-key="genre"] .drill-link').click();
     await expect(page.locator('#results tbody tr')).toHaveCount(2);
     await expect(page.locator('#segmentsActiveFilters .active-filter-chip')).toContainText('is Story collection');
   });

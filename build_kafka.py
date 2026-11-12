@@ -524,6 +524,16 @@ def write_outputs(data):
         "play_additions": {}, "play_removals": {},
     })
     dump_json(os.path.join(LINES_DIR, "all_lines.json"), data["lines"])
+    # English glosses and dictionary forms for every word form (reading aids).
+    from scripts.glossary import build_glossary
+    from pathlib import Path
+    glossary, glossary_stats, source = build_glossary(data["tokens"], Path(__file__).parent / "source_text")
+    dump_json(os.path.join(OUT_DIR, "glossary.json"), {
+        "meta": {"lang": "de", "dir": "ltr"}, "source": source,
+        "coverage": dict(glossary_stats), **glossary,
+    })
+    print(f"Glossary: {glossary_stats['lemmas']} lemmas for {glossary_stats['forms']} forms; "
+          f"{glossary_stats['words_without_lemma']} of {glossary_stats['words']} words without one")
 
     # Publish instance metadata for the contabulate.org hub: curated fields
     # from instance-meta.json merged with computed corpus stats.
